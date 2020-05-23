@@ -31,6 +31,15 @@ while i<totalLink:
     driver.get(url)
     time.sleep(1)
 
+    file = open("data.txt", 'a+')
+
+    elems = driver.find_elements_by_xpath("//a[@href]")
+    for elem in elems:
+        linksssss = elem.get_attribute("href")
+
+        if linksssss.startswith("https://www.tiktok.com/@"):
+            file.write(linksssss + "\n")
+
     address = driver.find_element_by_xpath("//meta[@name='description']").get_attribute('content')
 
     #handling page not found
