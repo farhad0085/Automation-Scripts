@@ -1,12 +1,3 @@
-'''
-I am really sorry that i disappoint you.
-Last night i wrote an script which scraped almost 150+ users profile.
-It was only for test purpose. So i didn't try with a large amount you know.
-But after that they (tiktok) blocked my request.
-Now I can't access the website.
-I tried using proxy but no output. So I give up.
-'''
-
 import time
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -25,7 +16,7 @@ driver.set_page_load_timeout(1000)  # 1000 seconds
 def deEmojify(inputString):
     return inputString.encode('ascii', 'ignore').decode('ascii')
 
-while i<totalLink:
+while i<=totalLink:
 
     url = lh.readExactLink(i)
     driver.get(url)
@@ -44,6 +35,7 @@ while i<totalLink:
 
     #handling page not found
     if address.startswith("TikTok"):
+    	i += 1
         continue
 
     # removing emojis from text
