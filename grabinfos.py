@@ -35,7 +35,7 @@ while i<=totalLink:
 
     #handling page not found
     if address.startswith("TikTok"):
-    	i += 1
+        i += 1
         continue
 
     # removing emojis from text
