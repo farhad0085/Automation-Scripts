@@ -1,3 +1,12 @@
+'''
+I am really sorry that i disappoint you.
+Last night i wrote an script which scraped almost 150+ users profile.
+It was only for test purpose. So i didn't try with a large amount you know.
+But after that they (tiktok) blocked my request.
+Now I can't access the website.
+I tried using proxy but no output. So I give up.
+'''
+
 import time
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
