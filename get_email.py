@@ -4,7 +4,22 @@ import imaplib
 import mailbox
 import re
 from openpyxl import Workbook
-import openpyxl
+import openpyxl, xlsxwriter
+import os.path
+
+
+
+file_name_to_save = "emails.xlsx"
+
+
+if not os.path.exists(file_name_to_save):
+	print("File not found!, I am creating a file.")
+	cr = xlsxwriter.Workbook(file_name_to_save) 
+	ex = cr.add_worksheet()
+	ex.write('A1','Email')
+	cr.close()
+	print("File created!")
+
 
 # Function to search for a key value pair  
 def search(key, value, con):  
@@ -26,7 +41,7 @@ search_string = input("Enter you search string here... : ")
 
 print("Please wait while getting data...", end="")
 
-data = search('text', search_string, mail)
+data = search('X-GM-RAW', search_string, mail)
 messageIdx = data[0].decode().split()
 
 uids = []
@@ -45,8 +60,12 @@ print(f"Number of result : {len(datas)}")
 
 # now its time to save the data
 
-book = openpyxl.load_workbook('emails.xlsx')
+book = openpyxl.load_workbook(file_name_to_save)
 sheet = book.active
+
+
+emails_set = set()
+
 
 
 for data in datas:
@@ -76,18 +95,22 @@ for data in datas:
     #find the email using regex
     clean_email = re.findall(r'[\w\.-]+@[\w\.-]+', email_from)
 
-    print(clean_email[0])
 
-    #make the email variable to tuple of tuple
+    #print(clean_email[0])
 
-    emails = tuple(clean_email)
+    # add the emails to email set
+    emails_set.add(clean_email[0])
 
-    sheet.append(emails)
 
-    book.save('emails.xlsx')
+for unique_email in emails_set:
+	l = []
+	l.append(unique_email)
+	sheet.append(tuple(l))
 
-    #worksheet.write(row, column, clean_email[0]) 
-  
-    # incrementing the value of row by one 
-    # with each iteratons. 
-    
+	book.save(file_name_to_save)
+
+#worksheet.write(row, column, clean_email[0]) 
+
+# incrementing the value of row by one 
+# with each iteratons. 
+
