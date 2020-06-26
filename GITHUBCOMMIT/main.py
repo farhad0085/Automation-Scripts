@@ -16,6 +16,8 @@ file_name_to_save = 'samples.csv'
 #slice url and get github api response
 slice_url = repo_url.split('/')
 
+
+# getting the api link
 url = "https://api.github.com/repos/"+ slice_url[-2] + "/" + slice_url[-1] + "/stats/commit_activity"
 
 # get the response from github api & reverse the response in order to get date wise
@@ -70,6 +72,7 @@ final_dates = []
 for l in dates:
 	for p in l[::-1]:
 		final_dates.append(p)
+
 
 today_d = datetime.datetime.date(datetime.datetime.now())
 
