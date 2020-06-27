@@ -19,7 +19,7 @@ PORT = 587 # 587 for tls
 
 
 csv_file_name = 'data.csv'
-email_recipient = "farhadhossain0085@gmail.com"
+email_recipient = "enter_recipient_email_here"
 report_file_name = "report.png" # supported formats: eps, pdf, pgf, png, ps, raw, rgba, svg, svgz)
 
 
