@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-import csv
+import csv, os
 import matplotlib.pyplot as plt
 from dateutil.parser import parse
 import smtplib
@@ -9,6 +9,8 @@ from email.mime.text import MIMEText
 from pathlib import Path
 from email.mime.base import MIMEBase
 from email import encoders
+import psutil
+import statistics
 
 
 # change this with your info
@@ -22,6 +24,9 @@ csv_file_name = 'data.csv'
 email_recipient = "enter_recipient_email_here"
 report_file_name = "report.png" # supported formats: eps, pdf, pgf, png, ps, raw, rgba, svg, svgz)
 
+
+cpus = []
+rams = []
 
 # methods
 def get_scraper_names(csv_file_name):
@@ -38,6 +43,17 @@ def get_scraper_names(csv_file_name):
                 scraper.add(row[0])
                 line_count += 1
     return list(scraper)
+cpus.append(psutil.cpu_percent(interval=1))
+
+
+def get_process_memory():
+    process = psutil.Process(os.getpid())
+    from psutil import virtual_memory
+
+    mem = virtual_memory()
+    mem.total  # total physical memory available
+    return (process.memory_info().rss/mem.total)*100
+
 
 def get_headers(csv_file_name):
     scraper = list()
@@ -53,7 +69,7 @@ def get_headers(csv_file_name):
             else:
                 line_count += 1
     return scraper
-
+cpus.append(psutil.cpu_percent(interval=1))
 
 def get_rows(csv_file_name):
     rows = []
@@ -71,7 +87,7 @@ def get_rows(csv_file_name):
                 line_count += 1
 
     return rows
-
+cpus.append(psutil.cpu_percent(interval=1))
 
 def send_mail(email, report_file, server=SERVER, port=PORT):
     print("Trying to login...")
@@ -109,7 +125,9 @@ def send_mail(email, report_file, server=SERVER, port=PORT):
     # Terminate the SMTP session and close the connection
     s.quit()
 
+rams.append(get_process_memory())
 
+cpus.append(psutil.cpu_percent(interval=1))
 
 scraper_names = get_scraper_names(csv_file_name)
 headers = get_headers(csv_file_name)
@@ -124,6 +142,10 @@ print("Creating Report...hold on")
 
 fig = plt.figure()
 
+# start process
+
+rams.append(get_process_memory())
+cpus.append(psutil.cpu_percent(interval=1))
 scraper_number = len(scraper_names)
 ax = [None] * ((scraper_number*5) + 1)
 for scraper in scraper_names:
@@ -158,22 +180,20 @@ for scraper in scraper_names:
             dt = parse(date)
     
     
-    c_avg = 0
-    c_max = 0
-    r_avg = 0
-    r_max = 0
+    # c_avg = 0
+    # c_max = 0
+    # r_avg = 0
+    # r_max = 0
 
     for row in rows:
         if row[0] == scraper:
             if parse(row[2]) == dt:
                 keywordScraped = row[3]
-                c_avg = int(row[5])
-                c_max = int(row[6])
-                r_avg = float(row[7])
-                r_max = int(row[8])
+                # c_avg = int(row[5])
+                # c_max = int(row[6])
+                # r_avg = float(row[7])
+                # r_max = int(row[8])
             
-    
-    
     # row 1
     ax[i] = fig.add_subplot(scraper_number, 5, i)
     
@@ -261,14 +281,16 @@ for scraper in scraper_names:
     
     i += 1
 
+    cpus.append(psutil.cpu_percent(interval=1))
+    rams.append(get_process_memory())
     # show max and average CPU and RAM
-    print("")
-    print("For", scraper)
-    print("Average CPU : ", c_avg)
-    print("Maximum CPU : ", c_max)
-    print("Average RAM : ", r_avg)
-    print("Maximum RAM : ", r_max)
-    print("")
+    # print("")
+    # print("For", scraper)
+    # print("Average CPU : ", c_avg)
+    # print("Maximum CPU : ", c_max)
+    # print("Average RAM : ", r_avg)
+    # print("Maximum RAM : ", r_max)
+    # print("")
 
     # print(dates)
     # print(ram_max)
@@ -281,12 +303,29 @@ for scraper in scraper_names:
     #fig.savefig(f'report.png', bbox_inches='tight')
     
     #i += 1
-
+cpus.append(psutil.cpu_percent(interval=1))
 fig.savefig(report_file_name, bbox_inches='tight')
 print("Report saved!")
 #fig.show()
-
+cpus.append(psutil.cpu_percent(interval=1))
 report_file = open(report_file_name)
 
 # now send email
 send_mail(email_recipient, report_file)
+
+
+cpus.append(psutil.cpu_percent(interval=1))
+rams.append(get_process_memory())
+
+# calculate average and max cpu and ram
+
+cpu_average = statistics.mean(cpus)
+cpu_maximum = max(cpus)
+
+ram_average = statistics.mean(rams)
+ram_maximum = max(rams)
+
+print("CPU Average:",cpu_average)
+print("CPU Maximum:",cpu_maximum)
+print("RAM Average:",ram_average)
+print("RAM Maximum:",ram_maximum)
