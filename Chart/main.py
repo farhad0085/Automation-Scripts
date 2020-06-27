@@ -277,4 +277,4 @@ print("Report saved!")
 report_file = open(report_file_name)
 
 # now send email
-# send_mail(email_recipient, report_file)
+send_mail(email_recipient, report_file)
