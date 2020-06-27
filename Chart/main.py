@@ -12,10 +12,10 @@ from email import encoders
 
 
 # change this with your info
-MY_ADDRESS = 'farhadhossain0085@gmail.com'
-PASSWORD = 'rwwcpcarnddkpjrg'
+MY_ADDRESS = 'your_email_address_here' # example@gmail.com
+PASSWORD = 'your_password' # note if your actual password doesn't work, try creating a app password from you google account and use that instead.
 SERVER = 'smtp.gmail.com'
-PORT = 587
+PORT = 587 # 587 for tls
 
 
 csv_file_name = 'data.csv'
@@ -158,11 +158,19 @@ for scraper in scraper_names:
             dt = parse(date)
     
     
-    
+    c_avg = 0
+    c_max = 0
+    r_avg = 0
+    r_max = 0
+
     for row in rows:
         if row[0] == scraper:
             if parse(row[2]) == dt:
                 keywordScraped = row[3]
+                c_avg = int(row[5])
+                c_max = int(row[6])
+                r_avg = float(row[7])
+                r_max = int(row[8])
             
     
     
@@ -232,9 +240,9 @@ for scraper in scraper_names:
     
     i += 1
     
-    print(dates)
-    print(cpu_max)
-    print(cpu_avg)
+    # print(dates)
+    # print(cpu_max)
+    # print(cpu_avg)
     
     
     # row 5
@@ -253,6 +261,15 @@ for scraper in scraper_names:
     
     i += 1
 
+    # show max and average CPU and RAM
+    print("")
+    print("For", scraper)
+    print("Average CPU : ", c_avg)
+    print("Maximum CPU : ", c_max)
+    print("Average RAM : ", r_avg)
+    print("Maximum RAM : ", r_max)
+    print("")
+
     # print(dates)
     # print(ram_max)
     # print(ram_avg)
@@ -268,11 +285,6 @@ for scraper in scraper_names:
 fig.savefig(report_file_name, bbox_inches='tight')
 print("Report saved!")
 #fig.show()
-
-
-# show max and average CPU and RAM
-# This will be created after discuss with him
-
 
 report_file = open(report_file_name)
 
