@@ -25,52 +25,52 @@ report_file_name = "report.png" # supported formats: eps, pdf, pgf, png, ps, raw
 
 # methods
 def get_scraper_names(csv_file_name):
-	scraper = set()
-	with open(csv_file_name) as csv_file:
-		csv_reader = csv.reader(csv_file, delimiter=',')
-		line_count = 0
-		for row in csv_reader:
-			if line_count == 0:
-				line_count += 1
-			elif line_count == 1:
-				line_count += 1
-			else:
-				scraper.add(row[0])
-				line_count += 1
-	return list(scraper)
+    scraper = set()
+    with open(csv_file_name) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        for row in csv_reader:
+            if line_count == 0:
+                line_count += 1
+            elif line_count == 1:
+                line_count += 1
+            else:
+                scraper.add(row[0])
+                line_count += 1
+    return list(scraper)
 
 def get_headers(csv_file_name):
-	scraper = list()
-	with open(csv_file_name) as csv_file:
-		csv_reader = csv.reader(csv_file, delimiter=',')
-		line_count = 0
-		for row in csv_reader:
-			if line_count == 0:
-				scraper = row
-				line_count += 1
-			elif line_count == 1:
-				line_count += 1
-			else:
-				line_count += 1
-	return scraper
+    scraper = list()
+    with open(csv_file_name) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        for row in csv_reader:
+            if line_count == 0:
+                scraper = row
+                line_count += 1
+            elif line_count == 1:
+                line_count += 1
+            else:
+                line_count += 1
+    return scraper
 
 
 def get_rows(csv_file_name):
-	rows = []
-	with open(csv_file_name) as csv_file:
-		csv_reader = csv.reader(csv_file, delimiter=',')
-		line_count = 0
-		for row in csv_reader:
+    rows = []
+    with open(csv_file_name) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        for row in csv_reader:
 
-			if line_count == 0:
-				line_count += 1
-			elif line_count == 1:
-				line_count += 1
-			else:
-				rows.append(row)
-				line_count += 1
+            if line_count == 0:
+                line_count += 1
+            elif line_count == 1:
+                line_count += 1
+            else:
+                rows.append(row)
+                line_count += 1
 
-	return rows
+    return rows
 
 
 def send_mail(email, report_file, server=SERVER, port=PORT):
@@ -141,15 +141,15 @@ for scraper in scraper_names:
             # x axis values 
             date = row[2]
             # corresponding y axis values 
-            duration = row[1]
+            duration = int(row[1])
             rowScrape = int(row[4])
             dates.append(date)
             rowsScraped.append(rowScrape)
-            durations.append(int(duration))
-            cpu_avg.append(row[5])
-            cpu_max.append(row[6])
-            ram_avg.append(row[7])
-            ram_max.append(row[8])
+            durations.append(duration)
+            cpu_avg.append(int(row[5]))
+            cpu_max.append(int(row[6]))
+            ram_avg.append(float(row[7]))
+            ram_max.append(int(row[8]))
 
     # get larger date
     dt = parse(dates[0])
@@ -219,8 +219,10 @@ for scraper in scraper_names:
     # row 4
     ax[i] = fig.add_subplot(scraper_number, 5, i)
     #plotting the points  
-    ax[i].plot(dates, cpu_max)
-    ax[i].plot(dates, cpu_avg)
+    ax[i].plot(dates, cpu_max, color='r', label="Max")
+    ax[i].plot(dates, cpu_avg, color='g', label="Average")
+
+    ax[i].legend(loc="upper right")
       
     # naming the x axis 
     ax[i].set_xlabel('Date') 
@@ -230,15 +232,19 @@ for scraper in scraper_names:
     
     i += 1
     
-    
+    print(dates)
+    print(cpu_max)
+    print(cpu_avg)
     
     
     # row 5
     ax[i] = fig.add_subplot(scraper_number, 5, i)
     #plotting the points  
-    ax[i].plot(dates, ram_max)
-    ax[i].plot(dates, ram_avg)
-      
+    ax[i].plot(dates, ram_max, color='r', label="Max")
+    ax[i].plot(dates, ram_avg, color='g', label="Average")
+    
+    ax[i].legend(loc="upper right")
+
     # naming the x axis 
     ax[i].set_xlabel('Date') 
       
@@ -246,6 +252,10 @@ for scraper in scraper_names:
     ax[i].title.set_text('RAM')
     
     i += 1
+
+    # print(dates)
+    # print(ram_max)
+    # print(ram_avg)
     
     
     # function to show the plot 
@@ -259,7 +269,12 @@ fig.savefig(report_file_name, bbox_inches='tight')
 print("Report saved!")
 #fig.show()
 
+
+# show max and average CPU and RAM
+# This will be created after discuss with him
+
+
 report_file = open(report_file_name)
 
 # now send email
-send_mail(email_recipient, report_file)
+# send_mail(email_recipient, report_file)
