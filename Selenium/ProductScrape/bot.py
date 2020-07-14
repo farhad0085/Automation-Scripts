@@ -22,7 +22,10 @@ while i <= total_products:
 
 	try:
 		p_name = driver.find_element_by_css_selector(".GrE04").get_attribute('textContent')
-		p_price = driver.find_element_by_css_selector(".IyLvo").get_attribute('textContent')
+		p_price_1 = driver.find_element_by_css_selector(".IyLvo").get_attribute('textContent')
+		p_price_2 = driver.find_element_by_css_selector(".IyLvo").get_attribute('textContent')
+		p_price_3 = driver.find_element_by_css_selector(".IyLvo").get_attribute('textContent')
+
 		image_link = driver.find_element_by_css_selector("div._2FbOx:nth-child(1) > img:nth-child(1)").get_attribute('src')
 													
 		# save the image
