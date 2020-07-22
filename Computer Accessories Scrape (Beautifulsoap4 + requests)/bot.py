@@ -8,7 +8,10 @@ def get_products_link(url):
     while True:
         link_set_temp = set()
         url_next = url + "?page=" + str(i)
-        response = requests.get(url_next)
+        try:
+            response = requests.get(url_next)
+        except:
+            continue
 
         soup = BeautifulSoup(response.content,"html.parser")
 
@@ -43,13 +46,29 @@ def get_product_infos_and_save(product_links, file_name, input_url):
         soup = BeautifulSoup(response.content, "html.parser")
 
         div_content = soup.find("div", {"class" : "content-product-right col-md-7 col-sm-12 col-xs-12"})
+        try:
+            title = div_content.find('h1', attrs={'itemprop': 'name'}).text
+        except:
+            title = "Could not scrape"
 
-        title = div_content.find('h1', attrs={'itemprop': 'name'}).text
+        try:
+            price = div_content.find('span', attrs={'itemprop': 'price'}).get('content')[:-5]
+        except:
+            price = "Could not scrape"
+        try:
+            brand = div_content.find('span', attrs={'itemprop': 'name'}).text.strip()
+        except:
+            brand = "Could not scrape"
 
-        price = div_content.find('span', attrs={'itemprop': 'price'}).get('content')[:-5]
-        brand = div_content.find('span', attrs={'itemprop': 'name'}).text.strip()
-        product_code = div_content.find("div", attrs={"class": "model"}).text[15:].replace("-", " ")
-        availability = div_content.find("div", attrs={"class": "stock"}).text[15:]
+        try:
+            product_code = div_content.find("div", attrs={"class": "model"}).text[15:].replace("-", " ")
+        except:
+            product_code = "Could not scrape"
+
+        try:
+            availability = div_content.find("div", attrs={"class": "stock"}).text[15:]
+        except:
+            availability = "Could not scrape"
 
         # print("Title : ", title)
         # print("Price : ", price)
