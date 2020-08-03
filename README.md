@@ -1,1 +1,1 @@
-"#StockTwits Bot" 
+#StockTwits Bot
