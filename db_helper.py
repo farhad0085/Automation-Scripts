@@ -39,6 +39,24 @@ def get_prev_data_from_db(symbol):
 
     return bodies
 
+def get_all_data_from_db():
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    output = []
+
+    for m, r in session.query(Message, Response).filter(Message.response_id==Response.id).all():
+        dict = {}
+        dict['respone'] = r.response
+        dict['username'] = m.username
+        dict['body'] = m.body
+        dict['created_at'] = m.created_at
+        dict['symbol'] = m.symbol
+
+        output.append(dict)
+
+    return output
+
 if __name__ == "__main__":
     bodies = get_prev_data_from_db("AAPL")
     print(bodies)

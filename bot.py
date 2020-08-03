@@ -1,6 +1,8 @@
 import requests
-from db_helper import Message, Response, engine, get_prev_data_from_db
+from db_helper import Message, Response, engine,\
+    get_prev_data_from_db, get_all_data_from_db
 from sqlalchemy.orm import sessionmaker
+import pandas as pd
 
 CLIENT_ID = "9fa2b8f4e81cc1c8"
 CLIENT_SECRET = "acfa1edd26c3a94bd4b3ef288654ce7a07ab734c"
@@ -93,10 +95,16 @@ def get_fresh_new_data(new_data, query):
     return new_dict
 
 if __name__ == "__main__":
-    symbol = "AAPL"
+    symbol = "AAPL" # you can change this to query other symbols
     endpoint = "https://api.stocktwits.com/api/2/streams/symbol"
 
     messages = get_messages(endpoint, symbol)
 
     new_messages = get_fresh_new_data(messages, symbol)
     save_to_db(new_messages)
+
+    data = get_all_data_from_db()
+
+    df = pd.DataFrame(data) # this is the dataframe that you asked for
+
+    # df.to_html('output.html')
