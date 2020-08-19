@@ -4,6 +4,13 @@ import random
 import datetime
 import pandas as pd
 
+
+def get_ticker_input():
+    # ticker = input("Enter Ticker: ")
+    ticker = "aapl"
+    ticker = ticker.lower()
+    return ticker
+    
 def get_page_source(url):
     user_agents = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36",
@@ -28,12 +35,6 @@ def get_page_source(url):
     # response_content = requests.get(url, headers=headers).text
     response_content = open("page_source.html", "r").read()
     return response_content
-
-def get_ticker_input():
-    # ticker = input("Enter Ticker: ")
-    ticker = "aapl"
-    ticker = ticker.lower()
-    return ticker
 
 def get_page_url(ticker):
     page = "https://finviz.com/quote.ashx?t="
