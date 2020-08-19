@@ -105,24 +105,63 @@ def get_trading_data(soup):
 
     return output_data
 
+def get_yesterday_date():
+    today = datetime.date.today()
+    yesterday = today - datetime.timedelta(days=1)
+    yesterday = yesterday.strftime('%b-%d-%y')
+    return yesterday
+
+def get_news_data(soup):
+    table = soup.find("table", class_="fullview-news-outer")
+    trs = table.find_all('tr')
+    output_data = []
+    date = ""
+    date_new = ""
+    for tr in trs:
+        row_dict = {}
+        tds = tr.find_all('td')
+        timestamp = tds[0].text
+
+        if len(timestamp) > 9:
+            date_new = timestamp
+            date = date_new
+            date_new = date_new[:-8]
+        else:
+            date = date_new + timestamp
+
+        row_dict['timestamp'] = date
+        url_a = tds[1].find('a', class_='tab-link-news')
+        row_dict['title'] = url_a.text
+        row_dict['url'] = url_a.get('href')
+        row_dict['website'] = tds[1].find('div', class_="news-link-right").text
+        if date[:-9] == get_yesterday_date():
+            output_data.append(row_dict)
+
+    return output_data
+    
+
 def main():
     ticker = get_ticker_input()
     page_url = get_page_url(ticker)
     page_source = get_page_source(page_url)
     soup = get_soup(page_source)
 
-    # financial_data = get_financial_data(soup, ticker)
-    # df_financial = pd.DataFrame(financial_data)
+    financial_data = get_financial_data(soup, ticker)
+    analysis_outlook_data = get_analysts_outlook_data(soup)
+    news_data = get_news_data(soup)
+    trading_data = get_trading_data(soup)
+    
+    df_financial = pd.DataFrame(financial_data)
     # df_financial.to_html("Financial.html")
 
-    # analysis_outlook_data = get_analysts_outlook_data(soup)
-    # df_analysis_outlook = pd.DataFrame(analysis_outlook_data)
+    df_analysis_outlook = pd.DataFrame(analysis_outlook_data)
     # df_analysis_outlook.to_html("Analysis_Outlook.html")
 
-    trading_data = get_trading_data(soup)
     df_trading = pd.DataFrame(trading_data)
-    df_trading.to_html("Trading.html")
+    # df_trading.to_html("Trading.html")
+    
+    df_news = pd.DataFrame(news_data)
+    # df_news.to_html("News.html")
 
 if __name__ == "__main__":
     main()
-    
