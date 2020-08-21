@@ -254,8 +254,7 @@ def urlopen_with_retry(*args, **kwargs):
 
 def download_urls(
         urls, title, ext, total_size, output_dir='.', refer=None, merge=True,
-        faker=False, headers={}, **kwargs
-):
+        faker=False, headers={}, **kwargs):
     assert urls
     if json_output:
         json_output_.download_urls(
@@ -407,12 +406,12 @@ for id in ids:
         print('Processing:', id)
         try:
             if not os.path.exists(main_json_dir + '/' + str(id) + '.json'):
-                tiktok_download('https://t.tiktok.com/i18n/share/video/' + id)
+                tiktok_download('https://www.tiktok.com/share/video/' + id)
             else:
                 print('Already Here:', main_json_dir + '/' + str(id) + '.json')
         except:
             print("This Url didn't work:",
-                  'https://t.tiktok.com/i18n/share/video/' + id)
+                  'https://www.tiktok.com/share/video/' + id)
             pass
 
 try:

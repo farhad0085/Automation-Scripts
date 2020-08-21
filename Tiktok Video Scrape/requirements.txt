@@ -1,0 +1,17 @@
+appdirs==1.4.4
+autopep8==1.5.4
+beautifulsoup4==4.9.1
+certifi==2020.6.20
+chardet==3.0.4
+idna==2.10
+pycodestyle==2.6.0
+pyee==7.0.2
+pyppeteer==0.2.2
+requests==2.24.0
+selenium==3.141.0
+soupsieve==2.0.1
+TikTokApi==3.4.3
+toml==0.10.1
+tqdm==4.48.2
+urllib3==1.25.10
+websockets==8.1
