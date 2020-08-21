@@ -32,8 +32,8 @@ def get_page_source(url):
         "User-Agent": user_agent
     }
 
-    # response_content = requests.get(url, headers=headers).text
-    response_content = open("page_source.html", "r").read()
+    response_content = requests.get(url, headers=headers).text
+    # response_content = open("page_source.html", "r").read()
     return response_content
 
 def get_page_url(ticker):
@@ -154,15 +154,19 @@ def main():
     
     df_financial = pd.DataFrame(financial_data)
     # df_financial.to_html("Financial.html")
+    print(df_financial)
 
     df_analysis_outlook = pd.DataFrame(analysis_outlook_data)
     # df_analysis_outlook.to_html("Analysis_Outlook.html")
+    # print(df_analysis_outlook)
 
     df_trading = pd.DataFrame(trading_data)
     # df_trading.to_html("Trading.html")
-    
+    # print(df_trading)
+
     df_news = pd.DataFrame(news_data)
     # df_news.to_html("News.html")
+    # print(df_news)
 
 if __name__ == "__main__":
     main()
