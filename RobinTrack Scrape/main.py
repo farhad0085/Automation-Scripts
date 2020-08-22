@@ -34,9 +34,15 @@ def get_last_hour_data(csv_file):
     return last_hour_data
 
 
-if __name__ == "__main__":
-    stock = "MSFT"
+def get_dataframe(stock):
     filename = download_csv(stock)
     last_hour_data = get_last_hour_data(filename)
     df = pd.DataFrame(last_hour_data)
+    return df
+
+
+if __name__ == "__main__":
+    stock = "GE"
+    df = get_dataframe(stock)
+
     print(df)
