@@ -1,20 +1,9 @@
 from TikTokApi import TikTokApi
-import datetime
-import io
 import json
-import logging
 import os
-import re
 import shutil
-import socket
 import sys
 import datetime
-from urllib import request, parse, error
-
-import bs4
-import requests
-
-
 
 
 def get_video_infos(id):
@@ -30,7 +19,6 @@ def get_video_infos(id):
 
         video_data = tiktok['itemInfo']['itemStruct']['video']
         share_meta = tiktok['itemInfo']['shareMeta']
-        print(share_meta['title'])
         url = "https://www.tiktok.com/share/video/" + str(id)
         timestamp = datetime.datetime.fromtimestamp(tiktok['itemInfo']['itemStruct']['createTime']).strftime("%Y-%m-%d %H:%M:%S")
 
