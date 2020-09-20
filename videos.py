@@ -94,7 +94,7 @@ def get_latest_videos(channel_username):
             continue
             
         if os.path.exists(paths + "/" + str(tweet_id) + ".json"):
-            print("Skipping (already there) -> " + tweetId)
+            print("Skipping (already there) -> " + tweet_id)
             continue
 
         duration, thumb = get_duration(tweet_id)
