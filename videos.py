@@ -1,7 +1,11 @@
 import GetOldTweets3 as got
 from datetime import datetime
 from requests_html import HTMLSession
-import sys, os, json, urllib
+import sys
+import os
+import json
+import urllib
+from snscrape.modules.twitter import TwitterUserScraper
 
 
 def save_json(idd, title, description, time, duration, link, channel):
@@ -20,18 +24,17 @@ def save_json(idd, title, description, time, duration, link, channel):
     print("{} Saved".format(idd))
 
 
-
 def save_thumbnail(idd, screenshot):
     if not os.path.exists(paths + "/" + str(idd) + '.jpg'):
         urllib.request.urlretrieve(screenshot, str(idd) + ".jpg")
         os.rename(str(idd) + ".jpg", paths + "/" + str(idd) + ".jpg")
 
 
-
 def get_token():
     with open('tok.txt', 'r') as f:
         token = f.read()
     return token
+
 
 def get_headers(token):
     headers = {
@@ -43,11 +46,12 @@ def get_headers(token):
 
     return headers
 
+
 def get_duration(id):
     url = f"https://api.twitter.com/1.1/videos/tweet/config/{id}.json"
     try:
         token = get_token()
-        
+
         session = HTMLSession()
         response = session.get(url, headers=get_headers(token))
 
@@ -56,13 +60,15 @@ def get_duration(id):
         if 'errors' in html:
             print("Changing Token")
             try:
-                os.system('python ' + os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                        sys.argv[0].replace('videos.py', 'tokenId.py')))
+                # print("trying")
+                # os.system('python ' + os.path.join(os.path.dirname(os.path.realpath(__file__)), sys.argv[0].replace('videos.py', 'tokenId.py')))
+                os.system('python ' + "tokenId.py")
+                # print("hello")
             except:
-                os.system('py ' + os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                                sys.argv[0].replace('videos.py', 'tokenId.py')))
+                # os.system('py ' + os.path.join(os.path.dirname(os.path.realpath(__file__)), sys.argv[0].replace('videos.py', 'tokenId.py')))
+                os.system('python3.6 ' + "tokenId.py")
             token = get_token()
-            
+
             response = session.get(url, headers=get_headers(token))
             html = response.json()
 
@@ -81,20 +87,25 @@ def get_duration(id):
 
 
 def get_latest_videos(channel_username):
-    tweetCriteria = got.manager.TweetCriteria().setUsername(channel_username)\
-                                           .setMaxTweets(30)
-    tweets = got.manager.TweetManager.getTweets(tweetCriteria)
-    
-    for tweet in tweets:
-        tweet_id = tweet.id
+    # tweetCriteria = got.manager.TweetCriteria().setUsername(channel_username).setMaxTweets(30)
+    # tweets = got.manager.TweetManager.getTweets(tweetCriteria)
+    tweet_user = TwitterUserScraper(username=channel_username)
+    tweets = tweet_user.get_items()
 
+    i = 0
+    for tweet in tweets:
+        if i < 30:
+            tweet_id = tweet.id
+            i += 1
+        else:
+            break
         '''Check if video id already exists'''
         if os.path.exists(paths + "/" + str(tweet_id) + ".no"):
-            print("Skipping (novideo) -> " + tweet_id)
+            print("Skipping (novideo) -> " + str(tweet_id))
             continue
-            
+
         if os.path.exists(paths + "/" + str(tweet_id) + ".json"):
-            print("Skipping (already there) -> " + tweet_id)
+            print("Skipping (already there) -> " + str(tweet_id))
             continue
 
         duration, thumb = get_duration(tweet_id)
@@ -104,14 +115,15 @@ def get_latest_videos(channel_username):
             '''Creating Temp File So Ignore This Next Time'''
             fh = open(str(tweet_id) + ".no", "w")
             fh.close()
-            os.rename(str(tweet_id) + ".no", paths + "/" + str(tweet_id) + ".no")
+            os.rename(str(tweet_id) + ".no", paths +
+                      "/" + str(tweet_id) + ".no")
             continue
 
         duration = duration
         title = tweet.username
-        description = tweet.text
+        description = tweet.content
         time = tweet.date
-        link = tweet.permalink
+        link = tweet.url
         channel = tweet.username
 
         save_json(tweet_id, title, description, time, duration, link, channel)
@@ -123,9 +135,10 @@ def get_latest_videos(channel_username):
 
 if __name__ == "__main__":
     channel = sys.argv[1]
-    
-    paths = "./Twitter" 
+
+    paths = "./Twitter"
     if not os.path.exists(paths):
         os.makedirs(paths)
 
     get_latest_videos(channel)
+    # print(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'tokenId.py'))
