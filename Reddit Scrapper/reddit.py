@@ -7,12 +7,6 @@ def timestamp_to_datetime(timestamp):
     dt_object = datetime.datetime.fromtimestamp(int(timestamp))
     return dt_object
 
-
-def timestamp_to_datetime(timestamp):
-    dt_object = datetime.datetime.fromtimestamp(int(timestamp))
-    return dt_object
-
-
 def get_posts(subreddit, days_ago=120):
 
     current_date = datetime.datetime.utcnow()
@@ -25,9 +19,13 @@ def get_posts(subreddit, days_ago=120):
     next_url = main_url
 
     loop = 1
+    ignored = 0
     while True:
         print(next_url)
-        response = requests.get(next_url, headers=headers).json()
+        try:
+            response = requests.get(next_url, headers=headers).json()
+        except:
+            break
         # print(response)
         childrens = response['data']['children']
 
@@ -55,11 +53,13 @@ def get_posts(subreddit, days_ago=120):
             data['created_utc'] = timestamp_to_datetime(created_utc)
             data['url'] = url
             data['comments'] = comments
-            # print(data['created_utc'])
 
-            posts.append(data)
-
-            if data['created_utc'] < days_before and loop > 3:
+            if data['created_utc'] < days_before:
+                ignored += 1
+            else:
+                posts.append(data)
+            
+            if data['created_utc'] < days_before and ignored > 200:
                 return posts
 
         loop += 1
@@ -77,15 +77,12 @@ def get_posts(subreddit, days_ago=120):
         time.sleep(0.3)
     return posts
 
-
 def get_comment_json(subreddit, post_id):
     url = f"https://www.reddit.com/r/{subreddit}/comments/{post_id}/.json"
 
     response = requests.get(url, headers=headers).json()
     comments_data = response[1]
     return comments_data
-
-
 
 def recurr(replies, post_id):
 
@@ -146,7 +143,6 @@ def get_comments_data(subreddit, post_id):
     return comments_old
 
 
-
 if __name__ == "__main__":
 
     subreddit = "Bitcoin"
@@ -159,14 +155,14 @@ if __name__ == "__main__":
     df_posts = pd.DataFrame(posts)
     df_posts.to_csv("posts.csv")
 
-    comments = []
+    # comments = []
 
-    for post in posts:
-        comment_data = get_comments_data(subreddit, post['post_id'])
+    # for post in posts:
+    #     comment_data = get_comments_data(subreddit, post['post_id'])
 
-        for c in comment_data:
-            comments.append(c)
-    print("Total", len(comments), "comments grabbed")
-    df_comments = pd.DataFrame(comments)
-    df_comments.to_csv("comments.csv")
+    #     for c in comment_data:
+    #         comments.append(c)
+    # print("Total", len(comments), "comments grabbed")
+    # df_comments = pd.DataFrame(comments)
+    # df_comments.to_csv("comments.csv")
     
