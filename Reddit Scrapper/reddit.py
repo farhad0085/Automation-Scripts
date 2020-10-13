@@ -2,14 +2,6 @@ import requests
 import time
 import datetime
 import pandas as pd
-# import dateparser
-
-subreddit = "Bitcoin"
-
-headers = {
-    'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
-}
-
 
 def timestamp_to_datetime(timestamp):
     dt_object = datetime.datetime.fromtimestamp(int(timestamp))
@@ -156,6 +148,13 @@ def get_comments_data(subreddit, post_id):
 
 
 if __name__ == "__main__":
+
+    subreddit = "Bitcoin"
+
+    headers = {
+        'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
+    }
+
     posts = get_posts(subreddit, days_ago=1)
     df_posts = pd.DataFrame(posts)
     df_posts.to_csv("posts.csv")
@@ -170,6 +169,4 @@ if __name__ == "__main__":
     print("Total", len(comments), "comments grabbed")
     df_comments = pd.DataFrame(comments)
     df_comments.to_csv("comments.csv")
-    # t = timestamp_to_datetime(1596281159.0)
-    # print(t)
     
