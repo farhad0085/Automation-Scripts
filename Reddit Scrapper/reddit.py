@@ -2,6 +2,7 @@ import requests
 import time
 import datetime
 import pandas as pd
+# import dateparser
 
 subreddit = "Bitcoin"
 
@@ -16,7 +17,7 @@ def timestamp_to_datetime(timestamp):
 
 
 def timestamp_to_datetime(timestamp):
-    dt_object = datetime.datetime.fromtimestamp(timestamp)
+    dt_object = datetime.datetime.fromtimestamp(int(timestamp))
     return dt_object
 
 
@@ -66,7 +67,7 @@ def get_posts(subreddit, days_ago=120):
 
             posts.append(data)
 
-            if data['created_utc'] < days_before and loop > 5:
+            if data['created_utc'] < days_before and loop > 3:
                 return posts
 
         loop += 1
@@ -81,7 +82,7 @@ def get_posts(subreddit, days_ago=120):
         if len(posts) > 200000:
             break
 
-        time.sleep(1)
+        time.sleep(0.3)
     return posts
 
 
@@ -106,7 +107,7 @@ def recurr(replies, post_id):
             replies_data = reply['data']
             try:
                 comment_data['body'] = replies_data['body']
-                comment_data['created_utc'] = replies_data['created_utc']
+                comment_data['created_utc'] = timestamp_to_datetime(replies_data['created_utc'])
                 comment_data['subreddit'] = replies_data['subreddit']
                 comment_data['post_id'] = post_id
                 comment_data['author'] = replies_data['author']
@@ -155,9 +156,9 @@ def get_comments_data(subreddit, post_id):
 
 
 if __name__ == "__main__":
-    posts = get_posts(subreddit, days_ago=120)
+    posts = get_posts(subreddit, days_ago=1)
     df_posts = pd.DataFrame(posts)
-    df_posts.to_html("posts.html")
+    df_posts.to_csv("posts.csv")
 
     comments = []
 
@@ -168,5 +169,7 @@ if __name__ == "__main__":
             comments.append(c)
     print("Total", len(comments), "comments grabbed")
     df_comments = pd.DataFrame(comments)
-    df_comments.to_html("comments.html")
+    df_comments.to_csv("comments.csv")
+    # t = timestamp_to_datetime(1596281159.0)
+    # print(t)
     
