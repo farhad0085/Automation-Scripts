@@ -7,7 +7,7 @@ def timestamp_to_datetime(timestamp):
     dt_object = datetime.datetime.fromtimestamp(int(timestamp))
     return dt_object
 
-def get_posts(subreddit, days_ago=120):
+def get_posts(subreddit, days_ago=120, limit=200000):
 
     current_date = datetime.datetime.utcnow()
     days_before = current_date - datetime.timedelta(days=days_ago)
@@ -71,7 +71,7 @@ def get_posts(subreddit, days_ago=120):
 
         print(len(posts), "posts grabbed")
 
-        if len(posts) > 200000:
+        if len(posts) > limit:
             break
 
         time.sleep(0.3)
