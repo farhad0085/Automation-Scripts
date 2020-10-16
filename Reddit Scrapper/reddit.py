@@ -81,7 +81,11 @@ def get_comment_json(subreddit, post_id):
     url = f"https://www.reddit.com/r/{subreddit}/comments/{post_id}/.json"
 
     response = requests.get(url, headers=headers).json()
-    comments_data = response[1]
+    try:
+        comments_data = response[1]
+    except:
+        comments_data = None
+
     return comments_data
 
 def recurr(replies, post_id):
@@ -116,6 +120,9 @@ def recurr(replies, post_id):
 def get_comments_data(subreddit, post_id):
 
     json_data = get_comment_json(subreddit, post_id)
+
+    if not json_data:
+        return []
 
     comments_old = []
     replies = json_data['data']['children']
