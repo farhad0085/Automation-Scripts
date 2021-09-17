@@ -59,14 +59,15 @@ def get_json_data(data):
     collection_data = []
 
     for item in data:
-        node = item.get("node", {})
+        node = item.get("node") or {}
         artist = node.get("owner") or {}
+        user = artist.get("user") or {}
 
         collection_id = node.get("id")
         collection_name = node.get("name", "")
-        collection_slug = node.get("slug", "")
+        collection_slug = node.get("slug") or ""
         artist_display_name = artist.get("displayName", "")
-        artist_url = artist.get("user", {}).get('username', "")
+        artist_url = user.get('username') or ""
         if artist_url:
             artist_url = "https://opensea.io/" + artist_url
         else:
@@ -145,9 +146,8 @@ def send_message_to_discord(data):
         "content": message
     }
     response = requests.post(config.DISCORD_WEBHOOK_URL, json=json_data)
-    if response.status_code == 200:
-        print("A new message has been sent with following text:")
-        print(message)
+    print("A new message has been sent with following text:")
+    print(message)
 
 
 def main():
