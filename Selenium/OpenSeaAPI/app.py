@@ -211,22 +211,26 @@ def get_final_data(old_collections, new_collections, deleted_collections):
 def main():
     csv_file = "Collection_data.csv"
     data_from_csv = get_data_from_csv(csv_file)
-    json_data = get_json_data(get_data())
+    
+    try:
+        api_data = get_data()
+        json_data = get_json_data(api_data)
+        new_collections = get_new_collections(json_data, data_from_csv)
+        
+        last_12_items_from_csv = data_from_csv[-12:]
+        deleted_objs = get_removed_items(last_12_items_from_csv, json_data)
+        final_data = get_final_data(data_from_csv, new_collections, deleted_objs)
 
-    new_collections = get_new_collections(json_data, data_from_csv)
+        # send this new collections data to discord.
+        write_to_csv(final_data, csv_file)
+        
+        for collection in new_collections:
+            send_message_to_discord(collection)
+        for collection in deleted_objs:
+            send_message_to_discord(collection, message="A collection is deleted.")
+    except:
+        pass
     
-    
-    last_12_items_from_csv = data_from_csv[-12:]
-    deleted_objs = get_removed_items(last_12_items_from_csv, json_data)
-    final_data = get_final_data(data_from_csv, new_collections, deleted_objs)
-
-    # send this new collections data to discord.
-    write_to_csv(final_data, csv_file)
-    
-    for collection in new_collections:
-        send_message_to_discord(collection)
-    for collection in deleted_objs:
-        send_message_to_discord(collection, message="A collection is deleted.")
 
 if __name__ == "__main__":
     while True:
