@@ -21,7 +21,7 @@ six==1.15.0
 snscrape==0.3.4
 soupsieve==2.0.1
 toml==0.10.1
-tqdm==4.48.2
+tqdm==4.66.3
 urllib3==1.25.10
 w3lib==1.22.0
 websockets==8.1
