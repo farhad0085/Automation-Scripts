@@ -48,30 +48,30 @@ i = 0
 
 for resp in response:
 
-	# first response is of current week
-	if i == 0:
-		l1 = []
-		#date needed
-		j = 0
-		for d in resp['days']:
-			if j<=today_number:
-				l1.append(d)
-				j += 1
-		dates.append(l1)
+    # first response is of current week
+    if i == 0:
+        l1 = []
+        #date needed
+        j = 0
+        for d in resp['days']:
+            if j<=today_number:
+                l1.append(d)
+                j += 1
+        dates.append(l1)
 
-	else:
-		l2 = []
-		for d in resp['days']:
-			l2.append(d)
-		dates.append(l2)
-	i += 1
+    else:
+        l2 = []
+        for d in resp['days']:
+            l2.append(d)
+        dates.append(l2)
+    i += 1
 # 	dates.append(resp['days'])
 
 final_dates = []
 
 for l in dates:
-	for p in l[::-1]:
-		final_dates.append(p)
+    for p in l[::-1]:
+        final_dates.append(p)
 
 
 today_d = datetime.datetime.date(datetime.datetime.now())
@@ -81,15 +81,15 @@ i = 0
 for d in final_dates:
 
 
-	fields=[]
+    fields=[]
 
-	fields.append(str(today_d - timedelta(days=i)))
-	fields.append(str(d))
+    fields.append(str(today_d - timedelta(days=i)))
+    fields.append(str(d))
 
-	with open(file_name_to_save, 'a+') as f:
-	    writer = csv.writer(f)
-	    writer.writerow(fields)
-	i += 1
+    with open(file_name_to_save, 'a+') as f:
+        writer = csv.writer(f)
+        writer.writerow(fields)
+    i += 1
 
 
 print(f"{i+1} Data saved to csv!")
