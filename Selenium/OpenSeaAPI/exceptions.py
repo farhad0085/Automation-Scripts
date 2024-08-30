@@ -1,2 +1,0 @@
-class RequestFailed(BaseException):
-    pass
