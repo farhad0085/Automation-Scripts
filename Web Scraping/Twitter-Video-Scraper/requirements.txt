@@ -14,14 +14,14 @@ pyee==7.0.2
 pyppeteer==0.2.2
 pyquery==1.4.1
 PySocks==1.7.1
-requests==2.24.0
+requests==2.32.2
 requests-html==0.10.0
 selenium==3.141.0
 six==1.15.0
 snscrape==0.3.4
 soupsieve==2.0.1
 toml==0.10.1
-tqdm==4.66.3
-urllib3==1.25.10
+tqdm==4.48.2
+urllib3==1.26.19
 w3lib==1.22.0
 websockets==8.1
